@@ -1,0 +1,7 @@
+# Terraform
+.terraform 
+*.auto.tfvars
+*.tfstate
+*.tfstate.*
+.vscode/settings.json
+providers.tf.original
