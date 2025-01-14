@@ -44,10 +44,10 @@ jobs:
         id: env
         run: |
           if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
-            echo "env_dir=prod" >> $GITHUB_ENV
+            echo "env_dir=/home/runner/work/bethel-air-infra/prod" >> $GITHUB_ENV
             echo "s3_bucket=prod-bethel-air-tfstate" >> $GITHUB_ENV
           elif [[ "${GITHUB_REF_NAME}" == "develop" ]]; then
-            echo "env_dir=dev" >> $GITHUB_ENV
+            echo "env_dir=/home/runner/work/bethel-air-infra/dev" >> $GITHUB_ENV
             echo "s3_bucket=dev-bethel-air-tfstate" >> $GITHUB_ENV
           else
             echo "Unsupported branch: ${GITHUB_REF_NAME}"
@@ -56,7 +56,7 @@ jobs:
 
       - name: "Change Directory"
         run: |
-          cd ${{ github.workspace }}/${{ env.env_dir }}
+          cd ${{ env.env_dir }}
           echo "Switched to directory: $PWD"
 
       - name: "Initialize Terraform"
