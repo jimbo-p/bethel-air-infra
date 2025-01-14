@@ -57,7 +57,7 @@ jobs:
       - name: "Initialize Terraform"
         run: |
           terraform init \
-            -backend-config="key=${{ env.TERRAFORM_DIR }}/terraform.tfstate" \
+            -backend-config="key=${{ env.TERRAFORM_DIR }}-bethel-air.tfstate" \
             -backend-config="bucket=${{ env.TERRAFORM_BUCKET }}" \
             -backend-config="region=us-east-1"
 
