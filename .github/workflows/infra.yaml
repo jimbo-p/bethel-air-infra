@@ -5,7 +5,7 @@ on:
     branches:
       - develop
       - main
-  workflow_dispatch:  # Allow manual execution
+  workflow_dispatch:
     inputs:
       action:
         description: "Choose action (plan, apply, or destroy)"
@@ -15,7 +15,6 @@ on:
         options:
           - plan
           - apply
-          - destroy
 
 jobs:
   terraform:
@@ -41,14 +40,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: "Set Environment Variables Based on Branch"
+      - name: "Determine Environment"
+        id: env
         run: |
           if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
-            echo "TERRAFORM_DIR=prod" >> $GITHUB_ENV
-            echo "TERRAFORM_BUCKET=prod-bethel-air-tfstate" >> $GITHUB_ENV
+            echo "env_dir=prod" >> $GITHUB_ENV
+            echo "s3_bucket=prod-bethel-air-tfstate" >> $GITHUB_ENV
           elif [[ "${GITHUB_REF_NAME}" == "develop" ]]; then
-            echo "TERRAFORM_DIR=dev" >> $GITHUB_ENV
-            echo "TERRAFORM_BUCKET=dev-bethel-air-tfstate" >> $GITHUB_ENV
+            echo "env_dir=dev" >> $GITHUB_ENV
+            echo "s3_bucket=dev-bethel-air-tfstate" >> $GITHUB_ENV
           else
             echo "Unsupported branch: ${GITHUB_REF_NAME}"
             exit 1
@@ -62,14 +62,14 @@ jobs:
       - name: "Initialize Terraform"
         run: |
           terraform init \
-            -backend-config="key=${{ env.TERRAFORM_DIR }}-bethel-air.tfstate" \
-            -backend-config="bucket=${{ env.TERRAFORM_BUCKET }}" \
+            -backend-config="key=${{ env.env_dir }}-bethel-air.tfstate" \
+            -backend-config="bucket=${{ env.s3_bucket }}" \
             -backend-config="region=us-east-1"
 
       - name: "Terraform Plan"
         if: ${{ github.event.inputs.action == 'plan' }}
-        run: terraform plan -out=plan.tfplan -var-file="${{ env.TERRAFORM_DIR }}/terraform.tfvars"
+        run: terraform plan -out=plan.tfplan"
 
-      # - name: "Terraform Apply"
-      #   if: ${{ github.event.inputs.action == 'apply' }}
-      #   run: terraform apply -auto-approve plan.tfplan
+      - name: "Terraform Apply"
+        if: ${{ github.event.inputs.action == 'apply' }}
+        run: terraform apply -auto-approve plan.tfplan
