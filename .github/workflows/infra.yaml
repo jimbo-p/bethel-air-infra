@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - main
   workflow_dispatch:  # Allow manual execution
     inputs:
       action:
@@ -40,21 +41,30 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      # Step 4: Initialize Terraform
-      - name: "Terraform Init"
-        run: terraform init
+      - name: "Set Environment Variables Based on Branch"
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
+            echo "TERRAFORM_DIR=prod" >> $GITHUB_ENV
+            echo "TERRAFORM_BUCKET=prod-bethel-air-tfstate" >> $GITHUB_ENV
+          elif [[ "${GITHUB_REF_NAME}" == "develop" ]]; then
+            echo "TERRAFORM_DIR=dev" >> $GITHUB_ENV
+            echo "TERRAFORM_BUCKET=dev-bethel-air-tfstate" >> $GITHUB_ENV
+          else
+            echo "Unsupported branch: ${GITHUB_REF_NAME}"
+            exit 1
+          fi
 
-      # Step 5: Terraform Plan
-      - name: "Run Terraform Plan"
+      - name: "Initialize Terraform"
+        run: |
+          terraform init \
+            -backend-config="key=${{ env.TERRAFORM_DIR }}/terraform.tfstate" \
+            -backend-config="bucket=${{ env.TERRAFORM_BUCKET }}" \
+            -backend-config="region=us-east-1"
+
+      - name: "Terraform Plan"
         if: ${{ github.event.inputs.action == 'plan' }}
-        run: terraform plan -out=plan.tfplan
+        run: terraform plan -out=plan.tfplan -var-file="${{ env.TERRAFORM_DIR }}/terraform.tfvars"
 
-      # # Step 6: Terraform Apply
-      # - name: "Run Terraform Apply"
+      # - name: "Terraform Apply"
       #   if: ${{ github.event.inputs.action == 'apply' }}
       #   run: terraform apply -auto-approve plan.tfplan
-
-      # # Step 7: Terraform Destroy
-      # - name: "Run Terraform Destroy"
-      #   if: ${{ github.event.inputs.action == 'destroy' }}
-      #   run: terraform destroy -auto-approve
