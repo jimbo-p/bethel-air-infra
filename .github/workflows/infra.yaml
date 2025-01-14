@@ -59,10 +59,10 @@ jobs:
             exit 1
           fi
 
-      - name: "Change Directory"
-        run: |
-          cd ${{ env.env_dir }}
-          echo "Switched to directory: $PWD"
+      # - name: "Change Directory"
+      #   run: |
+      #     cd ${{ env.env_dir }}
+      #     echo "Switched to directory: $PWD"
 
       - name: "Initialize Terraform"
         run: |
