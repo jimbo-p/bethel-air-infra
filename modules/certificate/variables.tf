@@ -14,3 +14,9 @@ variable "subject_alternative_names" {
   type = list(string)
   default = []
 }
+
+variable "hostedzone" {
+  type = string
+  default = "peacehouston.com"
+  
+}

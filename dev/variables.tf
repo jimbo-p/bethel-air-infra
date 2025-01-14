@@ -6,7 +6,7 @@ variable "application-name" {
 
 variable "domain_name" {
   type    = string
-  default = "peacehouston.com"
+  default = "dev.peacehouston.com"
 }
 
 variable "environment" {
@@ -18,4 +18,9 @@ variable "environment" {
 variable "region" {
   type    = string
   default = "us-east-1"
+}
+variable "hostedzone" {
+  type = string
+  default = "peacehouston.com"
+  
 }

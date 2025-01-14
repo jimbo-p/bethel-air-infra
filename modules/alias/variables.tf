@@ -10,3 +10,9 @@ variable "cloudfront_domain_name" {
 variable "cloudfront-zone-id" {
   type = string
 }
+
+variable "hostedzone" {
+  type = string
+  default = "peacehouston.com"
+  
+}

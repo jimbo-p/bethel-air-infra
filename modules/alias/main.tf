@@ -1,5 +1,5 @@
 data "aws_route53_zone" "created" {
-  name = var.domain_name
+  name = var.hostedzone
 }
 
 resource "aws_route53_record" "alias" {

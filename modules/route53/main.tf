@@ -1,6 +1,6 @@
 # Retrieve information about your hosted zone from AWS
 data "aws_route53_zone" "created" {
-  name = var.domain_name
+  name = var.hostedzone
 }
 
 # Create DNS record that will be used for our certificate validation

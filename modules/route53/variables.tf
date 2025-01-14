@@ -16,3 +16,9 @@ variable "domain_validation_options" {
 variable "certificate_arn" {
   type = string
 }
+
+variable "hostedzone" {
+  type = string
+  default = "peacehouston.com"
+  
+}
