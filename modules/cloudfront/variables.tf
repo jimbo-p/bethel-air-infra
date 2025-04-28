@@ -1,7 +1,7 @@
 variable "oac-name" {
   description = "This is the name of the cloudfront origin Access control with s3 bucket origin domain"
   type = string
-  default = "s3-bucket-oac"
+  default = "s3-bucket-oac-prod"
 }
 
 variable "origin_access_control_origin_type" {
