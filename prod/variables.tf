@@ -12,3 +12,14 @@ variable "domain_name" {
   type = string
   default = "peacehouston.com"
 }
+
+variable "application-name" {
+  type = string
+  default = "bethel-air"
+  
+}
+
+variable "environment" {
+  type = string
+  default = "prod"
+}
